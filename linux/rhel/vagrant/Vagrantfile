@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.proxy.http     = "<>"
+  config.proxy.https    = "<>"
+  config.proxy.no_proxy = "localhost,127.0.0.1"
+  config.vm.box = "oel65-fixed"
+  config.vm.hostname = "<>" 
+  config.vm.network "public_network", :mac => "08002768EDD0"
+
+  config.omnibus.chef_version = "11.16.2"
+  config.ssh.forward_x11 = true
+   config.vm.provider :virtualbox do |v, override|
+     v.gui = true
+     v.customize ["modifyvm", :id, "--memory", 4096]
+     v.customize ["modifyvm", :id, "--cpus", 2]
+#     v.customize ["setextradata", "global", "GUI/SuppressMessages", "all" ]
+   end
+
+  config.vm.provision "chef_client" do |chef|
+    chef.chef_server_url = "https://api.opscode.com/organizations/<>"
+    chef.provisioning_path = "/etc/chef"
+    chef.validation_key_path = "<>"
+    chef.validation_client_name = "eloquasandbox-validator"
+    chef.encrypted_data_bag_secret_key_path = '<>'
+  end
+end
